@@ -48,7 +48,7 @@ namespace MultiQueueModels
             else if (select == 2)
                 this.SelectionMethod = Enums.SelectionMethod.Random;
             else if (select == 3)
-                this.SelectionMethod = Enums.SelectionMethod.HighestPriority;
+                this.SelectionMethod = Enums.SelectionMethod.LeastUtilization;
             //this.SelectionMethod
             sr.ReadLine();
             sr.ReadLine();
