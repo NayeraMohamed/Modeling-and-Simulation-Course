@@ -8,12 +8,12 @@
 
 # Build results
 
-[Dd]ebug/
-[Rr]elease/
+debug/
+release/
 x64/
-[Bb]in/
-[Oo]bj/
-[Pp]roperties/
+bin/
+obj/
+Properties/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
