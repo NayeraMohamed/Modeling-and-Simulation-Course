@@ -1,0 +1,11 @@
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\bin\Debug\MultiQueueSimulation.exe.config
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\bin\Debug\MultiQueueSimulation.exe
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\bin\Debug\MultiQueueSimulation.pdb
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\bin\Debug\MultiQueueModels.dll
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\bin\Debug\MultiQueueModels.pdb
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\obj\Debug\MultiQueueSimulation.csprojResolveAssemblyReference.cache
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\obj\Debug\MultiQueueSimulation.Form1.resources
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\obj\Debug\MultiQueueSimulation.Properties.Resources.resources
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\obj\Debug\MultiQueueSimulation.csproj.GenerateResource.Cache
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\obj\Debug\MultiQueueSimulation.exe
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueSimulation\obj\Debug\MultiQueueSimulation.pdb

@@ -40,3 +40,8 @@ E:\4th year\2nd semester\Modelling and simulation\Task 1\Template_Students\Multi
 E:\4th year\2nd semester\Modelling and simulation\Task 1\Template_Students\MultiQueueSimulation\MultiQueueModels\obj\Debug\MultiQueueModels.csproj.CoreCompileInputs.cache
 E:\4th year\2nd semester\Modelling and simulation\Task 1\Template_Students\MultiQueueSimulation\MultiQueueModels\obj\Debug\MultiQueueModels.dll
 E:\4th year\2nd semester\Modelling and simulation\Task 1\Template_Students\MultiQueueSimulation\MultiQueueModels\obj\Debug\MultiQueueModels.pdb
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueModels\bin\Debug\MultiQueueModels.dll
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueModels\bin\Debug\MultiQueueModels.pdb
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueModels\obj\Debug\MultiQueueModels.csprojResolveAssemblyReference.cache
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueModels\obj\Debug\MultiQueueModels.dll
+D:\College\Senior\Second Semester\Modeling\Tasks\1\Task 1\Template_Students\Modeling-and-Simulation-Course\MultiQueueSimulation\MultiQueueModels\obj\Debug\MultiQueueModels.pdb
