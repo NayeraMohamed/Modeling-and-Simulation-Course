@@ -107,5 +107,55 @@ namespace MultiQueueModels
         public List<SimulationCase> SimulationTable { get; set; }
         public PerformanceMeasures PerformanceMeasures { get; set; }
 
+        //Function to calculate time ranges
+        public void RangesCalcualtion(List<TimeDistribution> list)
+        {
+            decimal com = 1;
+            for (int i = 0; i < list.Count; i++)
+            {
+                decimal probability = list[i].Probability;
+               
+                if (i == 0)
+                {
+                    list[i].CummProbability = probability;
+                    com = list[i].CummProbability;
+                    list[i].MinRange = 1;
+                    list[i].MaxRange = (int)(com * 100);
+                }
+                
+                else
+                {
+                    list[i].MinRange = (int)((com * 100) + 1);
+                    list[i].CummProbability = com + probability;
+                    com = list[i].CummProbability;
+                    list[i].MaxRange = (int)(com * 100);
+                }
+                if (probability == 0)
+                {
+                    list[i].MinRange = 0;
+                    list[i].MaxRange = 0;
+                }
+            }
+
+        }
+
+        //Function to map time ranges
+        public int MapRanges(List<TimeDistribution> list, int num)
+        {
+
+            for (int i = 0; i < list.Count(); i++)
+            {
+                if (num >= list[i].MinRange && num <= list[i].MaxRange)
+                {
+                    //SimulationTable[index].InterArrival = list[i].Time;
+                    // SimulationTable[index].ArrivalTime = SimulationTable[index - 1].ArrivalTime + SimulationTable[index].InterArrival;
+                    return list[i].Time;
+                }
+            }
+            return -1;
+        }
+
+        
+
     }
 }
