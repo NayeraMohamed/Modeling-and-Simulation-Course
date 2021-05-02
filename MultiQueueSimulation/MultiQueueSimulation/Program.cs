@@ -54,13 +54,31 @@ namespace MultiQueueSimulation
                     //server selection 
                     if (system.SelectionMethod.Equals("Random"))
                     {
-
-                        while(true)
+                        HashSet<int> busyServers = new HashSet<int>();
+                        bool serverFound = false;
+                        while (busyServers.Count < system.Servers.Count)
                         { 
                             index = random.Next(1, system.Servers.Count);
-                            //arival time momkn ykon fe time fel queue
-                            if (system.Servers[index].FinishTime <= system.SimulationTable[i].ArrivalTime)
-                                break;
+                            if (!busyServers.Contains(index))
+                            {
+                                //arrival time momkn ykon fe time fel queue
+                                if (system.Servers[index].FinishTime <= system.SimulationTable[i].ArrivalTime) //available server
+                                {
+                                    serverFound = true;
+                                    break;
+                                }
+                                busyServers.Add(index);
+                            }
+                        }
+                        if (serverFound)
+                        {
+                            //h set akher 4 columns fl table
+                            system.SimulationTable[i].StartTime = system.SimulationTable[i].ArrivalTime;
+                        }
+                        else
+                        {
+                            //hn loop 3l servers w nshof men awl wahd hykhls
+
                         }
                         
                     }
@@ -68,7 +86,7 @@ namespace MultiQueueSimulation
                     {
                         for (int j = 0; j < system.Servers.Count; ++j)
                         {
-
+                            //
                         }
                     }
                     randService = random.Next(1, 100);
@@ -76,13 +94,12 @@ namespace MultiQueueSimulation
                     //begin time
                     system.SimulationTable[i].ServiceTime = time;
                     system.SimulationTable[i].EndTime = time + system.SimulationTable[i].StartTime;
-
-
+                    system.SimulationTable[i].TimeInQueue = system.Servers[index].FinishTime - system.SimulationTable[i].ArrivalTime;
+                    system.SimulationTable[i].TimeInQueue = (system.SimulationTable[i].TimeInQueue <= 0) ? 0 : system.SimulationTable[i].TimeInQueue;
                 }
-
-
             }
-            else 
+            else //time
+            //b akbr runtime 3nd kol el servers lw mwlsnash ll time da
             {
                 int customerIndex = 0, Time = 0;
                 while(Time <= system.StoppingNumber)
