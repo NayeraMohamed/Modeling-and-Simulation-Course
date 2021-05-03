@@ -32,7 +32,8 @@ namespace MultiQueueSimulation
             int randArrival = 0, time, randService, index = 0, customerIndex = 0;
             while (true)
             {
-                if (system.StoppingCriteria.Equals("NumberOfCustomers"))
+                SimulationCase customer = new SimulationCase();
+                if (system.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
                 {
                     if (customerIndex + 1 >= system.StoppingNumber)
                     {
@@ -41,7 +42,7 @@ namespace MultiQueueSimulation
                 }
                 else //time
                 {
-                    int Time = 0; //largest serveice time for all servers
+                    int Time = 0; //largest service time for all servers
                     for (int x = 0; x < system.Servers.Count; ++x)
                     {
                         if (system.Servers[x].FinishTime > Time)
@@ -56,20 +57,20 @@ namespace MultiQueueSimulation
                 }
 
                 //creating simulation table
-                system.SimulationTable[customerIndex].CustomerNumber = customerIndex + 1;
+                customer.CustomerNumber = customerIndex + 1;
                 if (customerIndex == 0)
                 {
-                    system.SimulationTable[customerIndex].RandomInterArrival = 0;
-                    system.SimulationTable[customerIndex].InterArrival = 0;
-                    system.SimulationTable[customerIndex].ArrivalTime = 0;
+                    customer.RandomInterArrival = 0;
+                    customer.InterArrival = 0;
+                    customer.ArrivalTime = 0;
                 }
                 else
                 {
                     randArrival = random.Next(1, 100);
-                    system.SimulationTable[customerIndex].RandomInterArrival = randArrival;
+                    customer.RandomInterArrival = randArrival;
                     time = system.MapRanges(system.InterarrivalDistribution, randArrival);
-                    system.SimulationTable[customerIndex].InterArrival = time;
-                    system.SimulationTable[customerIndex].ArrivalTime = system.SimulationTable[customerIndex - 1].ArrivalTime + time;
+                    customer.InterArrival = time;
+                    customer.ArrivalTime = system.SimulationTable[customerIndex - 1].ArrivalTime + time;
                 }
 
                 //server selection 
@@ -82,7 +83,7 @@ namespace MultiQueueSimulation
                         index = random.Next(1, system.Servers.Count);
                         if (!busyServers.Contains(index))
                         {
-                            if (system.Servers[index].FinishTime <= system.SimulationTable[customerIndex].ArrivalTime) //available server
+                            if (system.Servers[index].FinishTime <= customer.ArrivalTime) //available server
                             {
                                 serverFound = true;
                                 break;
@@ -95,7 +96,7 @@ namespace MultiQueueSimulation
                 {
                     for (int j = 0; j < system.Servers.Count; ++j)
                     {
-                        if (system.Servers[j].FinishTime <= system.SimulationTable[customerIndex].ArrivalTime) //available server
+                        if (system.Servers[j].FinishTime <= customer.ArrivalTime) //available server
                         {
                             index = j;
                             serverFound = true;
@@ -106,7 +107,7 @@ namespace MultiQueueSimulation
 
                 if (serverFound)
                 {
-                    system.SimulationTable[customerIndex].StartTime = system.SimulationTable[customerIndex].ArrivalTime;
+                    customer.StartTime = customer.ArrivalTime;
                 }
                 else
                 {
@@ -118,26 +119,26 @@ namespace MultiQueueSimulation
                         {
                             finishTime = system.Servers[x].FinishTime;
                             index = x;
-                            system.SimulationTable[customerIndex].StartTime = finishTime;
+                            customer.StartTime = finishTime;
                         }
                     }
                 }
                 randService = random.Next(1, 100);
                 time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
-                system.SimulationTable[customerIndex].ServiceTime = time;
-                system.Servers[index].FinishTime = system.SimulationTable[customerIndex].EndTime = time + system.SimulationTable[customerIndex].StartTime;
-                system.SimulationTable[customerIndex].TimeInQueue = system.Servers[index].FinishTime - system.SimulationTable[customerIndex].ArrivalTime;
-                system.SimulationTable[customerIndex].TimeInQueue = (system.SimulationTable[customerIndex].TimeInQueue <= 0) ? 0 : system.SimulationTable[customerIndex].TimeInQueue;
+                customer.ServiceTime = time;
+                system.Servers[index].FinishTime = customer.EndTime = time + customer.StartTime;
+                customer.TimeInQueue = system.Servers[index].FinishTime - customer.ArrivalTime;
+                customer.TimeInQueue = (customer.TimeInQueue <= 0) ? 0 : customer.TimeInQueue;
 
                 customerIndex++; //increment customer number
+                system.SimulationTable.Add(customer);
             }
             
             string result = TestingManager.Test(system, Constants.FileNames.TestCase1);
             MessageBox.Show(result);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
-           
+            Application.Run(new Form1());       
         }
     }
 }
