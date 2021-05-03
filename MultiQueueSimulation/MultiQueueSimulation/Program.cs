@@ -29,108 +29,107 @@ namespace MultiQueueSimulation
                 Console.WriteLine(system.Servers[i].TimeDistribution[1].CummProbability);
             }
 
-            //creating simulation table
-            int randArrival, time, randService, index;
-            if (system.StoppingCriteria.Equals( "NumberOfCustomers"))
+            int randArrival = 0, time, randService, index = 0, customerIndex = 0;
+            while (true)
             {
-                for (int i = 0; i < system.StoppingNumber; ++i)
+                if (system.StoppingCriteria.Equals("NumberOfCustomers"))
                 {
-                    system.SimulationTable[i].CustomerNumber = i + 1;
-                    if(i == 0)
+                    if (customerIndex + 1 >= system.StoppingNumber)
                     {
-                        system.SimulationTable[i].RandomInterArrival = 0;
-                        system.SimulationTable[i].InterArrival = 0;
-                        system.SimulationTable[i].ArrivalTime = 0;
+                        break;
                     }
-                    else
-                    {
-                        randArrival = random.Next(1, 100);
-                        system.SimulationTable[i].RandomInterArrival = randArrival;
-                        time = system.MapRanges(system.InterarrivalDistribution, randArrival);
-                        system.SimulationTable[i].InterArrival = time;
-                        system.SimulationTable[i].ArrivalTime = system.SimulationTable[i - 1].ArrivalTime + time;
-                    }
-                    
-                    //server selection 
-                    bool serverFound = false;
-                    if (system.SelectionMethod.Equals("Random"))
-                    {
-                        HashSet<int> busyServers = new HashSet<int>();
-                        while (busyServers.Count < system.Servers.Count)
-                        { 
-                            index = random.Next(1, system.Servers.Count);
-                            if (!busyServers.Contains(index))
-                            {
-                                if (system.Servers[index].FinishTime <= system.SimulationTable[i].ArrivalTime) //available server
-                                {
-                                    serverFound = true;
-                                    break;
-                                }
-                                busyServers.Add(index);
-                            }
-                        }
-                    }
-                    else if (system.SelectionMethod.Equals("HighestPriority"))
-                    {
-                        for (int j = 0; j < system.Servers.Count; ++j)
-                        {
-                            if (system.Servers[j].FinishTime <= system.SimulationTable[i].ArrivalTime) //available server
-                            {
-                                index = j;
-                                serverFound = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (serverFound)
-                    {
-                        system.SimulationTable[i].StartTime = system.SimulationTable[i].ArrivalTime;
-                    }
-                    else
-                    {
-                        //loop on servers and check which server has smallest finish time
-                        int finishTime = Int32.MaxValue;
-                        for (int x = 0; x < system.Servers.Count; ++x)
-                        {
-                            if (system.Servers[x].FinishTime < finishTime)
-                            {
-                                finishTime = system.Servers[x].FinishTime;
-                                index = x;
-                                system.SimulationTable[i].StartTime = finishTime;
-                            }
-                        }
-                    }  
-                    randService = random.Next(1, 100);
-                    time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
-                    system.SimulationTable[i].ServiceTime = time;
-                    system.Servers[index].FinishTime = system.SimulationTable[i].EndTime = time + system.SimulationTable[i].StartTime;
-                    system.SimulationTable[i].TimeInQueue = system.Servers[index].FinishTime - system.SimulationTable[i].ArrivalTime;
-                    system.SimulationTable[i].TimeInQueue = (system.SimulationTable[i].TimeInQueue <= 0) ? 0 : system.SimulationTable[i].TimeInQueue;
                 }
-            }
-            else //time
-            //b akbr runtime 3nd kol el servers lw mwlsnash ll time da
-            {
-                int customerIndex = 0, Time = 0;
-                while(Time <= system.StoppingNumber)
+                else //time
                 {
-                    system.SimulationTable[customerIndex].CustomerNumber = customerIndex + 1;
+                    int Time = 0; //largest serveice time for all servers
+                    for (int x = 0; x < system.Servers.Count; ++x)
+                    {
+                        if (system.Servers[x].FinishTime > Time)
+                        {
+                            Time = system.Servers[x].FinishTime;
+                        }
+                    }
+                    if (Time >= system.StoppingNumber)
+                    {
+                        break;
+                    }
+                }
+
+                //creating simulation table
+                system.SimulationTable[customerIndex].CustomerNumber = customerIndex + 1;
+                if (customerIndex == 0)
+                {
+                    system.SimulationTable[customerIndex].RandomInterArrival = 0;
+                    system.SimulationTable[customerIndex].InterArrival = 0;
+                    system.SimulationTable[customerIndex].ArrivalTime = 0;
+                }
+                else
+                {
                     randArrival = random.Next(1, 100);
-                    system.SimulationTable[i].RandomInterArrival = randArrival;
+                    system.SimulationTable[customerIndex].RandomInterArrival = randArrival;
                     time = system.MapRanges(system.InterarrivalDistribution, randArrival);
                     system.SimulationTable[customerIndex].InterArrival = time;
                     system.SimulationTable[customerIndex].ArrivalTime = system.SimulationTable[customerIndex - 1].ArrivalTime + time;
-                    //server selection fet index
-                    randService = random.Next(1, 100);
-                    time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
-                    //begin time
-                    system.SimulationTable[customerIndex].ServiceTime = time;
-                    system.SimulationTable[customerIndex].EndTime = time + system.SimulationTable[customerIndex].StartTime;
-                    
-                    Time += system.SimulationTable[customerIndex].EndTime;
-                    customerIndex += 1;
                 }
+
+                //server selection 
+                bool serverFound = false;
+                if (system.SelectionMethod.Equals("Random"))
+                {
+                    HashSet<int> busyServers = new HashSet<int>();
+                    while (busyServers.Count < system.Servers.Count)
+                    {
+                        index = random.Next(1, system.Servers.Count);
+                        if (!busyServers.Contains(index))
+                        {
+                            if (system.Servers[index].FinishTime <= system.SimulationTable[customerIndex].ArrivalTime) //available server
+                            {
+                                serverFound = true;
+                                break;
+                            }
+                            busyServers.Add(index);
+                        }
+                    }
+                }
+                else if (system.SelectionMethod.Equals("HighestPriority"))
+                {
+                    for (int j = 0; j < system.Servers.Count; ++j)
+                    {
+                        if (system.Servers[j].FinishTime <= system.SimulationTable[customerIndex].ArrivalTime) //available server
+                        {
+                            index = j;
+                            serverFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (serverFound)
+                {
+                    system.SimulationTable[customerIndex].StartTime = system.SimulationTable[customerIndex].ArrivalTime;
+                }
+                else
+                {
+                    //loop on servers and check which server has smallest finish time
+                    int finishTime = Int32.MaxValue;
+                    for (int x = 0; x < system.Servers.Count; ++x)
+                    {
+                        if (system.Servers[x].FinishTime < finishTime)
+                        {
+                            finishTime = system.Servers[x].FinishTime;
+                            index = x;
+                            system.SimulationTable[customerIndex].StartTime = finishTime;
+                        }
+                    }
+                }
+                randService = random.Next(1, 100);
+                time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
+                system.SimulationTable[customerIndex].ServiceTime = time;
+                system.Servers[index].FinishTime = system.SimulationTable[customerIndex].EndTime = time + system.SimulationTable[customerIndex].StartTime;
+                system.SimulationTable[customerIndex].TimeInQueue = system.Servers[index].FinishTime - system.SimulationTable[customerIndex].ArrivalTime;
+                system.SimulationTable[customerIndex].TimeInQueue = (system.SimulationTable[customerIndex].TimeInQueue <= 0) ? 0 : system.SimulationTable[customerIndex].TimeInQueue;
+
+                customerIndex++; //increment customer number
             }
             
             string result = TestingManager.Test(system, Constants.FileNames.TestCase1);

@@ -21,7 +21,7 @@ namespace MultiQueueModels
             case(2) = "TestCase2.txt"
             case(3) = "TestCase3.txt*/
 
-            FileStream TestCase1 = new FileStream("TestCase3.txt", FileMode.OpenOrCreate);
+            FileStream TestCase1 = new FileStream("TestCase1.txt", FileMode.OpenOrCreate);
             StreamReader sr = new StreamReader(TestCase1);
             String line;
             sr.ReadLine();
