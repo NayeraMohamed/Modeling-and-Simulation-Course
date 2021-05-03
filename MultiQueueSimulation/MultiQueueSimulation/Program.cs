@@ -52,16 +52,15 @@ namespace MultiQueueSimulation
                     }
                     
                     //server selection 
+                    bool serverFound = false;
                     if (system.SelectionMethod.Equals("Random"))
                     {
                         HashSet<int> busyServers = new HashSet<int>();
-                        bool serverFound = false;
                         while (busyServers.Count < system.Servers.Count)
                         { 
                             index = random.Next(1, system.Servers.Count);
                             if (!busyServers.Contains(index))
                             {
-                                //arrival time momkn ykon fe time fel queue
                                 if (system.Servers[index].FinishTime <= system.SimulationTable[i].ArrivalTime) //available server
                                 {
                                     serverFound = true;
@@ -70,30 +69,42 @@ namespace MultiQueueSimulation
                                 busyServers.Add(index);
                             }
                         }
-                        if (serverFound)
-                        {
-                            //h set akher 4 columns fl table
-                            system.SimulationTable[i].StartTime = system.SimulationTable[i].ArrivalTime;
-                        }
-                        else
-                        {
-                            //hn loop 3l servers w nshof men awl wahd hykhls
-
-                        }
-                        
                     }
                     else if (system.SelectionMethod.Equals("HighestPriority"))
                     {
                         for (int j = 0; j < system.Servers.Count; ++j)
                         {
-                            //
+                            if (system.Servers[j].FinishTime <= system.SimulationTable[i].ArrivalTime) //available server
+                            {
+                                index = j;
+                                serverFound = true;
+                                break;
+                            }
                         }
                     }
+
+                    if (serverFound)
+                    {
+                        system.SimulationTable[i].StartTime = system.SimulationTable[i].ArrivalTime;
+                    }
+                    else
+                    {
+                        //loop on servers and check which server has smallest finish time
+                        int finishTime = Int32.MaxValue;
+                        for (int x = 0; x < system.Servers.Count; ++x)
+                        {
+                            if (system.Servers[x].FinishTime < finishTime)
+                            {
+                                finishTime = system.Servers[x].FinishTime;
+                                index = x;
+                                system.SimulationTable[i].StartTime = finishTime;
+                            }
+                        }
+                    }  
                     randService = random.Next(1, 100);
                     time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
-                    //begin time
                     system.SimulationTable[i].ServiceTime = time;
-                    system.SimulationTable[i].EndTime = time + system.SimulationTable[i].StartTime;
+                    system.Servers[index].FinishTime = system.SimulationTable[i].EndTime = time + system.SimulationTable[i].StartTime;
                     system.SimulationTable[i].TimeInQueue = system.Servers[index].FinishTime - system.SimulationTable[i].ArrivalTime;
                     system.SimulationTable[i].TimeInQueue = (system.SimulationTable[i].TimeInQueue <= 0) ? 0 : system.SimulationTable[i].TimeInQueue;
                 }
@@ -116,7 +127,7 @@ namespace MultiQueueSimulation
                     //begin time
                     system.SimulationTable[customerIndex].ServiceTime = time;
                     system.SimulationTable[customerIndex].EndTime = time + system.SimulationTable[customerIndex].StartTime;
-                    //check with group Ayah
+                    
                     Time += system.SimulationTable[customerIndex].EndTime;
                     customerIndex += 1;
                 }
