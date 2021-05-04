@@ -17,8 +17,8 @@ namespace MultiQueueSimulation
         static void Main()
         {
             SimulationSystem system = new SimulationSystem();
-            
-            System.Random random = new System.Random();
+
+            Random r = new Random();
             //filling time distribution of Interarrival time and server time
             system.RangesCalcualtion(system.InterarrivalDistribution);
             //Console.WriteLine(system.InterarrivalDistribution[2].CummProbability);
@@ -37,7 +37,7 @@ namespace MultiQueueSimulation
                 SimulationCase customer = new SimulationCase();
                 if (system.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
                 {
-                    if (customerIndex + 1 >= system.StoppingNumber)
+                    if (customerIndex  >= system.StoppingNumber)
                     {
                         break;
                     }
@@ -62,13 +62,13 @@ namespace MultiQueueSimulation
                 customer.CustomerNumber = customerIndex + 1;
                 if (customerIndex == 0)
                 {
-                    customer.RandomInterArrival = 0;
+                    customer.RandomInterArrival = 1;
                     customer.InterArrival = 0;
                     customer.ArrivalTime = 0;
                 }
                 else
                 {
-                    randArrival = random.Next(1, 100);
+                    randArrival = r.Next(1, 100);
                     customer.RandomInterArrival = randArrival;
                     time = system.MapRanges(system.InterarrivalDistribution, randArrival);
                     customer.InterArrival = time;
@@ -77,12 +77,12 @@ namespace MultiQueueSimulation
 
                 //server selection 
                 bool serverFound = false;
-                if (system.SelectionMethod.Equals("Random"))
+                if (system.SelectionMethod == Enums.SelectionMethod.Random)
                 {
                     HashSet<int> busyServers = new HashSet<int>();
                     while (busyServers.Count < system.Servers.Count)
                     {
-                        index = random.Next(1, system.Servers.Count);
+                        index = r.Next(1, system.Servers.Count);
                         if (!busyServers.Contains(index))
                         {
                             if (system.Servers[index].FinishTime <= customer.ArrivalTime) //available server
@@ -94,7 +94,7 @@ namespace MultiQueueSimulation
                         }
                     }
                 }
-                else if (system.SelectionMethod.Equals("HighestPriority"))
+                else if (system.SelectionMethod == Enums.SelectionMethod.HighestPriority)
                 {
                     for (int j = 0; j < system.Servers.Count; ++j)
                     {
@@ -126,26 +126,28 @@ namespace MultiQueueSimulation
                         }
                     }
                 }
-                customer.ServerID = index;
+                
                 system.Servers[index].NumberOfCustomers += 1;
-                randService = random.Next(1, 100);
+                randService = r.Next(1, 100);
+                customer.RandomService = randService;
                 time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
                 customer.ServiceTime = time;
                 system.Servers[index].TotalWorkingTime += customer.ServiceTime;
-                system.Servers[index].FinishTime = customer.EndTime = time + customer.StartTime;
+                customer.EndTime = time + customer.StartTime;
+                system.Servers[index].FinishTime = customer.EndTime;
                 customer.TimeInQueue = system.Servers[index].FinishTime - customer.ArrivalTime;
                 customer.TimeInQueue = (customer.TimeInQueue <= 0) ? 0 : customer.TimeInQueue;
                 TimeInQueue += customer.TimeInQueue;
+                customer.AssignedServer = system.Servers[index];
                 customerIndex++; //increment customer number
                 system.SimulationTable.Add(customer);
             }
 
             //performance measures
-            PerformanceMeasures measures = new PerformanceMeasures();
-            measures.AverageWaitingTime = TimeInQueue / system.SimulationTable.Count;
-            measures.WaitingProbability = CustomerInQueue / system.SimulationTable.Count;
-            //measures.MaxQueueLength
-            system.PerformanceMeasures = measures;
+            system.PerformanceMeasures.AverageWaitingTime = TimeInQueue / system.SimulationTable.Count;
+            system.PerformanceMeasures.WaitingProbability = CustomerInQueue / system.SimulationTable.Count;
+            system.PerformanceMeasures.MaxQueueLength = CustomerInQueue;
+            
 
             //performance measures per server
             int TotalrunTime =0;
@@ -157,11 +159,14 @@ namespace MultiQueueSimulation
             for (int i = 0; i < system.Servers.Count; ++i)
             {
                 system.Servers[i].IdleProbability = (system.Servers[i].FinishTime - system.Servers[i].TotalWorkingTime) / TotalrunTime;
-                system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime / system.Servers[i].NumberOfCustomers;
+                if (system.Servers[i].NumberOfCustomers == 0)
+                    system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime;
+                else
+                   system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime / system.Servers[i].NumberOfCustomers;
                 system.Servers[i].Utilization = system.Servers[i].TotalWorkingTime / TotalrunTime;
                     
             }
-            string result = TestingManager.Test(system, Constants.FileNames.TestCase1);
+            string result = TestingManager.Test(system, Constants.FileNames.TestCase2);
             MessageBox.Show(result);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
