@@ -17,16 +17,13 @@ namespace MultiQueueSimulation
         static void Main()
         {
             SimulationSystem system = new SimulationSystem();
-            
-            System.Random random = new System.Random();
+            Random r = new Random();
             //filling time distribution of Interarrival time and server time
             system.RangesCalcualtion(system.InterarrivalDistribution);
-            //Console.WriteLine(system.InterarrivalDistribution[2].CummProbability);
             for (int i = 0; i < system.Servers.Count; ++i)
             {
                 system.RangesCalcualtion(system.Servers[i].TimeDistribution);
                 system.Servers[i].FinishTime = 0;
-                Console.WriteLine(system.Servers[i].TimeDistribution[1].CummProbability);
             }
 
             int randArrival = 0, time, randService, index = 0, customerIndex = 0;
@@ -35,7 +32,7 @@ namespace MultiQueueSimulation
                 SimulationCase customer = new SimulationCase();
                 if (system.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
                 {
-                    if (customerIndex + 1 >= system.StoppingNumber)
+                    if (customerIndex >= system.StoppingNumber)
                     {
                         break;
                     }
@@ -60,13 +57,13 @@ namespace MultiQueueSimulation
                 customer.CustomerNumber = customerIndex + 1;
                 if (customerIndex == 0)
                 {
-                    customer.RandomInterArrival = 0;
+                    customer.RandomInterArrival = 1;
                     customer.InterArrival = 0;
                     customer.ArrivalTime = 0;
                 }
                 else
                 {
-                    randArrival = random.Next(1, 100);
+                    randArrival = r.Next(1, 100);
                     customer.RandomInterArrival = randArrival;
                     time = system.MapRanges(system.InterarrivalDistribution, randArrival);
                     customer.InterArrival = time;
@@ -75,12 +72,12 @@ namespace MultiQueueSimulation
 
                 //server selection 
                 bool serverFound = false;
-                if (system.SelectionMethod.Equals("Random"))
+                if (system.SelectionMethod == Enums.SelectionMethod.Random)
                 {
                     HashSet<int> busyServers = new HashSet<int>();
                     while (busyServers.Count < system.Servers.Count)
                     {
-                        index = random.Next(1, system.Servers.Count);
+                        index = r.Next(1, system.Servers.Count);
                         if (!busyServers.Contains(index))
                         {
                             if (system.Servers[index].FinishTime <= customer.ArrivalTime) //available server
@@ -92,7 +89,7 @@ namespace MultiQueueSimulation
                         }
                     }
                 }
-                else if (system.SelectionMethod.Equals("HighestPriority"))
+                else if (system.SelectionMethod == Enums.SelectionMethod.HighestPriority)
                 {
                     for (int j = 0; j < system.Servers.Count; ++j)
                     {
@@ -123,10 +120,12 @@ namespace MultiQueueSimulation
                         }
                     }
                 }
-                randService = random.Next(1, 100);
-                time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
+                randService = r.Next(1, 100);
+                customer.RandomService = randService;
+                time = system.MapRanges(system.Servers[index].TimeDistribution, randService);
                 customer.ServiceTime = time;
-                system.Servers[index].FinishTime = customer.EndTime = time + customer.StartTime;
+                customer.EndTime = time + customer.StartTime;
+                system.Servers[index].FinishTime = customer.EndTime;
                 customer.TimeInQueue = system.Servers[index].FinishTime - customer.ArrivalTime;
                 customer.TimeInQueue = (customer.TimeInQueue <= 0) ? 0 : customer.TimeInQueue;
 
