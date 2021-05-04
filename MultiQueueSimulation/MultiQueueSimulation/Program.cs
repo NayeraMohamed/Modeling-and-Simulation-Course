@@ -145,7 +145,7 @@ namespace MultiQueueSimulation
 
             //performance measures
             system.PerformanceMeasures.AverageWaitingTime = TimeInQueue / system.SimulationTable.Count;
-            system.PerformanceMeasures.WaitingProbability = CustomerInQueue / system.SimulationTable.Count;
+            system.PerformanceMeasures.WaitingProbability = (CustomerInQueue / system.SimulationTable.Count) * 100;
             system.PerformanceMeasures.MaxQueueLength = CustomerInQueue;
             
 
@@ -158,7 +158,10 @@ namespace MultiQueueSimulation
             }
             for (int i = 0; i < system.Servers.Count; ++i)
             {
-                system.Servers[i].IdleProbability = ((system.Servers[i].FinishTime - system.Servers[i].TotalWorkingTime) / TotalrunTime) * 100;
+                if (system.Servers[i].FinishTime == 0)
+                    system.Servers[i].IdleProbability = 1;
+                else
+                    system.Servers[i].IdleProbability = ((system.Servers[i].FinishTime - system.Servers[i].TotalWorkingTime) / TotalrunTime) * 100;
                 if (system.Servers[i].NumberOfCustomers == 0)
                     system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime;
                 else
