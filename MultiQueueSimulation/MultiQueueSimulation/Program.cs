@@ -130,7 +130,7 @@ namespace MultiQueueSimulation
                 system.Servers[index].NumberOfCustomers += 1;
                 randService = r.Next(1, 100);
                 customer.RandomService = randService;
-                time = system.MapRanges(system.Servers[index].TimeDistribution, randArrival);
+                time = system.MapRanges(system.Servers[index].TimeDistribution, randService);
                 customer.ServiceTime = time;
                 system.Servers[index].TotalWorkingTime += customer.ServiceTime;
                 customer.EndTime = time + customer.StartTime;
@@ -158,7 +158,7 @@ namespace MultiQueueSimulation
             }
             for (int i = 0; i < system.Servers.Count; ++i)
             {
-                system.Servers[i].IdleProbability = (system.Servers[i].FinishTime - system.Servers[i].TotalWorkingTime) / TotalrunTime;
+                system.Servers[i].IdleProbability = ((system.Servers[i].FinishTime - system.Servers[i].TotalWorkingTime) / TotalrunTime) * 100;
                 if (system.Servers[i].NumberOfCustomers == 0)
                     system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime;
                 else
@@ -166,6 +166,11 @@ namespace MultiQueueSimulation
                 system.Servers[i].Utilization = system.Servers[i].TotalWorkingTime / TotalrunTime;
                     
             }
+
+            Console.WriteLine(system.Servers);
+            Console.WriteLine(system.InterarrivalDistribution);
+            Console.WriteLine(system.PerformanceMeasures);
+            Console.WriteLine(system.SimulationTable);  
             string result = TestingManager.Test(system, Constants.FileNames.TestCase2);
             MessageBox.Show(result);
             Application.EnableVisualStyles();
