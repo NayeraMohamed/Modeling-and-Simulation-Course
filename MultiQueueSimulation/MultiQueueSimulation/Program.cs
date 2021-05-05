@@ -128,6 +128,9 @@ namespace MultiQueueSimulation
                 }
                 
                 system.Servers[index].NumberOfCustomers += 1;
+                customer.TimeInQueue = system.Servers[index].FinishTime - customer.ArrivalTime;
+                customer.TimeInQueue = (customer.TimeInQueue <= 0) ? 0 : customer.TimeInQueue;
+                TimeInQueue += customer.TimeInQueue;
                 randService = r.Next(1, 100);
                 customer.RandomService = randService;
                 time = system.MapRanges(system.Servers[index].TimeDistribution, randService);
@@ -135,17 +138,15 @@ namespace MultiQueueSimulation
                 system.Servers[index].TotalWorkingTime += customer.ServiceTime;
                 customer.EndTime = time + customer.StartTime;
                 system.Servers[index].FinishTime = customer.EndTime;
-                customer.TimeInQueue = system.Servers[index].FinishTime - customer.ArrivalTime;
-                customer.TimeInQueue = (customer.TimeInQueue <= 0) ? 0 : customer.TimeInQueue;
-                TimeInQueue += customer.TimeInQueue;
+                
                 customer.AssignedServer = system.Servers[index];
                 customerIndex++; //increment customer number
                 system.SimulationTable.Add(customer);
             }
 
             //performance measures
-            system.PerformanceMeasures.AverageWaitingTime = TimeInQueue / system.SimulationTable.Count;
-            system.PerformanceMeasures.WaitingProbability = (CustomerInQueue / system.SimulationTable.Count) * 100;
+            system.PerformanceMeasures.AverageWaitingTime = (decimal)TimeInQueue / system.SimulationTable.Count;
+            system.PerformanceMeasures.WaitingProbability = ((decimal)CustomerInQueue / system.SimulationTable.Count) * 100;
             system.PerformanceMeasures.MaxQueueLength = CustomerInQueue;
             
 
@@ -158,15 +159,13 @@ namespace MultiQueueSimulation
             }
             for (int i = 0; i < system.Servers.Count; ++i)
             {
-                if (system.Servers[i].FinishTime == 0)
-                    system.Servers[i].IdleProbability = 1;
-                else
-                    system.Servers[i].IdleProbability = ((system.Servers[i].FinishTime - system.Servers[i].TotalWorkingTime) / TotalrunTime) * 100;
+                
+                 system.Servers[i].IdleProbability = ((decimal)(TotalrunTime - system.Servers[i].TotalWorkingTime) / TotalrunTime) * 100;
                 if (system.Servers[i].NumberOfCustomers == 0)
-                    system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime;
+                    system.Servers[i].AverageServiceTime = 0;
                 else
-                   system.Servers[i].AverageServiceTime = system.Servers[i].TotalWorkingTime / system.Servers[i].NumberOfCustomers;
-                system.Servers[i].Utilization = system.Servers[i].TotalWorkingTime / TotalrunTime;
+                    system.Servers[i].AverageServiceTime = (decimal)system.Servers[i].TotalWorkingTime / system.Servers[i].NumberOfCustomers;
+                system.Servers[i].Utilization = (decimal)system.Servers[i].TotalWorkingTime / TotalrunTime;
                     
             }
 
