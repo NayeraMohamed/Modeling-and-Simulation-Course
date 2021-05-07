@@ -170,7 +170,7 @@ namespace MultiQueueSimulation
             }
             //check if we need extra server
             system.PerformanceMeasures.ExtraServerNeeded = false;
-            if (system.PerformanceMeasures.WaitingProbability >= (decimal)0.5)
+            if (system.PerformanceMeasures.WaitingProbability > (decimal)0.5)
             {
                 system.PerformanceMeasures.ExtraServerNeeded = true;
             }
