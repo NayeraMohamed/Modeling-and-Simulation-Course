@@ -17,7 +17,7 @@ namespace MultiQueueSimulation
         static void Main()
         {
             SimulationSystem system = new SimulationSystem();
-
+            system.ReadFromFiles();
             Random r = new Random();
             //filling time distribution of Interarrival time and server time
             system.RangesCalcualtion(system.InterarrivalDistribution);
@@ -169,11 +169,7 @@ namespace MultiQueueSimulation
                     
             }
 
-            Console.WriteLine(system.Servers);
-            Console.WriteLine(system.InterarrivalDistribution);
-            Console.WriteLine(system.PerformanceMeasures);
-            Console.WriteLine(system.SimulationTable);  
-            string result = TestingManager.Test(system, Constants.FileNames.TestCase2);
+            string result = TestingManager.Test(system, Constants.FileNames.TestCase1);
             MessageBox.Show(result);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
