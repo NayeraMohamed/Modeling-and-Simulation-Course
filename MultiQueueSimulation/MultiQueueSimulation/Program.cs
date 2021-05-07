@@ -31,7 +31,7 @@ namespace MultiQueueSimulation
                 //Console.WriteLine(system.Servers[i].TimeDistribution[1].CummProbability);
             }
 
-            int randArrival = 0, time, randService, index = 0, customerIndex = 0, CustomerInQueue=0, TimeInQueue=0;
+            int randArrival = 0, time, randService, index = 0, customerIndex = 0, CustomerInQueue=0, TimeInQueue=0, maxQueue=0, startIndex=0;
             while (true)
             {
                 SimulationCase customer = new SimulationCase();
@@ -113,7 +113,7 @@ namespace MultiQueueSimulation
                 }
                 else
                 {
-                    CustomerInQueue++;
+                    //CustomerInQueue++;
                     //loop on servers and check which server has smallest finish time
                     int finishTime = Int32.MaxValue;
                     for (int x = 0; x < system.Servers.Count; ++x)
@@ -131,6 +131,32 @@ namespace MultiQueueSimulation
                 customer.TimeInQueue = system.Servers[index].FinishTime - customer.ArrivalTime;
                 customer.TimeInQueue = (customer.TimeInQueue <= 0) ? 0 : customer.TimeInQueue;
                 TimeInQueue += customer.TimeInQueue;
+                if (customer.TimeInQueue == 0)
+                {
+                    maxQueue = 0;
+                    startIndex = 0;
+                }
+                else
+                {
+                    CustomerInQueue++;
+                    if (customer.ArrivalTime >= system.SimulationTable[startIndex].StartTime && startIndex!=0)
+                    {
+                        maxQueue -= 1;
+                        startIndex = startIndex + 1;
+                    }
+
+                    if(startIndex == 0)
+                      startIndex = customerIndex;
+
+                    maxQueue += 1;
+
+                    if (system.PerformanceMeasures.MaxQueueLength < maxQueue)
+                        system.PerformanceMeasures.MaxQueueLength = maxQueue;
+                       
+                    
+                    
+
+                }
                 randService = r.Next(1, 100);
                 customer.RandomService = randService;
                 time = system.MapRanges(system.Servers[index].TimeDistribution, randService);
@@ -146,10 +172,11 @@ namespace MultiQueueSimulation
 
             //performance measures
             system.PerformanceMeasures.AverageWaitingTime = (decimal)TimeInQueue / system.SimulationTable.Count;
-            system.PerformanceMeasures.WaitingProbability = ((decimal)CustomerInQueue / system.SimulationTable.Count) * 100;
-            system.PerformanceMeasures.MaxQueueLength = CustomerInQueue;
+            system.PerformanceMeasures.WaitingProbability = ((decimal)CustomerInQueue / (decimal)system.SimulationTable.Count);
+            //system.PerformanceMeasures.WaitingProbability = (decimal)0.99;
+            //system.PerformanceMeasures.MaxQueueLength = CustomerInQueue;
+           
             
-
             //performance measures per server
             int TotalrunTime =0;
             for (int i = 0; i < system.Servers.Count; ++i )
@@ -160,17 +187,27 @@ namespace MultiQueueSimulation
             for (int i = 0; i < system.Servers.Count; ++i)
             {
                 
-                 system.Servers[i].IdleProbability = ((decimal)(TotalrunTime - system.Servers[i].TotalWorkingTime) / TotalrunTime) * 100;
+                 
                 if (system.Servers[i].NumberOfCustomers == 0)
+                {
+                    system.Servers[i].IdleProbability = 1;
                     system.Servers[i].AverageServiceTime = 0;
+                }
+                    
                 else
+                {
+                    system.Servers[i].IdleProbability = ((decimal)(TotalrunTime - system.Servers[i].TotalWorkingTime) / TotalrunTime);
                     system.Servers[i].AverageServiceTime = (decimal)system.Servers[i].TotalWorkingTime / system.Servers[i].NumberOfCustomers;
+                }
+                    
                 system.Servers[i].Utilization = (decimal)system.Servers[i].TotalWorkingTime / TotalrunTime;
                     
             }
 
             string result = TestingManager.Test(system, Constants.FileNames.TestCase1);
             MessageBox.Show(result);
+           // MessageBox.Show(CustomerInQueue.ToString());
+           // MessageBox.Show(system.SimulationTable.Count.ToString());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());       
