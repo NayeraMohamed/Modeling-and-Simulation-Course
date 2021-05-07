@@ -168,6 +168,12 @@ namespace MultiQueueSimulation
                 system.Servers[i].Utilization = (decimal)system.Servers[i].TotalWorkingTime / TotalrunTime;
                     
             }
+            //check if we need extra server
+            system.PerformanceMeasures.ExtraServerNeeded = false;
+            if (system.PerformanceMeasures.WaitingProbability >= (decimal)0.5)
+            {
+                system.PerformanceMeasures.ExtraServerNeeded = true;
+            }
 
             string result = TestingManager.Test(system, Constants.FileNames.TestCase1);
             MessageBox.Show(result);
