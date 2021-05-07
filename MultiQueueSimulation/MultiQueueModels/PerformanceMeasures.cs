@@ -11,5 +11,6 @@ namespace MultiQueueModels
         public decimal AverageWaitingTime { get; set; }
         public int MaxQueueLength { get; set; }
         public decimal WaitingProbability { get; set; }
+        public bool ExtraServerNeeded { get; set; }
     }
 }

@@ -21,14 +21,14 @@ namespace MultiQueueSimulation
             Random r = new Random();
             //filling time distribution of Interarrival time and server time
             system.RangesCalcualtion(system.InterarrivalDistribution);
-            //Console.WriteLine(system.InterarrivalDistribution[2].CummProbability);
+
             for (int i = 0; i < system.Servers.Count; ++i)
             {
                 system.RangesCalcualtion(system.Servers[i].TimeDistribution);
                 system.Servers[i].FinishTime = 0;
                 system.Servers[i].TotalWorkingTime = 0;
                 system.Servers[i].NumberOfCustomers = 0;
-                //Console.WriteLine(system.Servers[i].TimeDistribution[1].CummProbability);
+              
             }
 
             int randArrival = 0, time, randService, index = 0, customerIndex = 0, CustomerInQueue=0, TimeInQueue=0, maxQueue=0, startIndex=0;
@@ -113,7 +113,7 @@ namespace MultiQueueSimulation
                 }
                 else
                 {
-                    //CustomerInQueue++;
+                  
                     //loop on servers and check which server has smallest finish time
                     int finishTime = Int32.MaxValue;
                     for (int x = 0; x < system.Servers.Count; ++x)
@@ -149,13 +149,9 @@ namespace MultiQueueSimulation
                       startIndex = customerIndex;
 
                     maxQueue += 1;
-
                     if (system.PerformanceMeasures.MaxQueueLength < maxQueue)
                         system.PerformanceMeasures.MaxQueueLength = maxQueue;
                        
-                    
-                    
-
                 }
                 randService = r.Next(1, 100);
                 customer.RandomService = randService;
@@ -166,15 +162,14 @@ namespace MultiQueueSimulation
                 system.Servers[index].FinishTime = customer.EndTime;
                 
                 customer.AssignedServer = system.Servers[index];
-                customerIndex++; //increment customer number
+                customerIndex++; 
                 system.SimulationTable.Add(customer);
             }
 
             //performance measures
             system.PerformanceMeasures.AverageWaitingTime = (decimal)TimeInQueue / system.SimulationTable.Count;
             system.PerformanceMeasures.WaitingProbability = ((decimal)CustomerInQueue / (decimal)system.SimulationTable.Count);
-            //system.PerformanceMeasures.WaitingProbability = (decimal)0.99;
-            //system.PerformanceMeasures.MaxQueueLength = CustomerInQueue;
+           
            
             
             //performance measures per server
@@ -212,8 +207,6 @@ namespace MultiQueueSimulation
 
             string result = TestingManager.Test(system, Constants.FileNames.TestCase1);
             MessageBox.Show(result);
-           // MessageBox.Show(CustomerInQueue.ToString());
-           // MessageBox.Show(system.SimulationTable.Count.ToString());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());       
