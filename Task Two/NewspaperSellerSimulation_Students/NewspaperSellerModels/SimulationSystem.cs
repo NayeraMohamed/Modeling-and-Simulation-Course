@@ -26,6 +26,7 @@ namespace NewspaperSellerModels
         public List<DayTypeDistribution> DayTypeDistributions { get; set; }
         public List<DemandDistribution> DemandDistributions { get; set; }
 
+        #region Reading File
         public void ReadFile()
         {
             FileStream TestCase = new FileStream("TestCase2.txt", FileMode.OpenOrCreate);
@@ -57,6 +58,19 @@ namespace NewspaperSellerModels
             
             for (int i = 0; i < 3; i++) {
                 DayTypeDistribution element = new DayTypeDistribution();
+                if (i == 0)
+                {
+                    element.DayType = Enums.DayType.Good;
+
+                }
+                else if (i == 1)
+                {
+                    element.DayType = Enums.DayType.Fair;
+                }
+                else if (i == 2)
+                {
+                    element.DayType = Enums.DayType.Poor;
+                }
                 element.Probability = Decimal.Parse(dayTypeDist[i]);
                 this.DayTypeDistributions.Add(element);
             }
@@ -88,6 +102,7 @@ namespace NewspaperSellerModels
             }
 
         }
+        #endregion
 
         ///////////// OUTPUTS /////////////
         public List<SimulationCase> SimulationTable { get; set; }

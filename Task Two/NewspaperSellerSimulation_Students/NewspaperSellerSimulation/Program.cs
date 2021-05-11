@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NewspaperSellerModels;
 using NewspaperSellerTesting;
 
 namespace NewspaperSellerSimulation
@@ -18,8 +19,12 @@ namespace NewspaperSellerSimulation
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //maryam btgarb
-            NewspaperSellerModels.SimulationSystem s = new NewspaperSellerModels.SimulationSystem();
-            s.ReadFile();
+            SimulationSystem simulationSystem = new SimulationSystem();
+            simulationSystem.ReadFile();
+            Calculations calculations = new Calculations(simulationSystem);
+            simulationSystem = calculations.calculate();
+            string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase1);
+            MessageBox.Show(result);
             //Application.Run(new Form1());
         }
     }

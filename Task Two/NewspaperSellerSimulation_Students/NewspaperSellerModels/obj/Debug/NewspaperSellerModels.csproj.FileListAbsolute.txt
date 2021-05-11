@@ -36,3 +36,9 @@ E:\4th year\2nd semester\Modelling and simulation\Task2\NewspaperSellerSimulatio
 E:\4th year\2nd semester\Modelling and simulation\Task2\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.csproj.CoreCompileInputs.cache
 E:\4th year\2nd semester\Modelling and simulation\Task2\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.dll
 E:\4th year\2nd semester\Modelling and simulation\Task2\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.pdb
+F:\D\Uni\4th Year\Modeling and Simulation\task 2\Task Two\NewspaperSellerSimulation_Students\NewspaperSellerModels\bin\Debug\NewspaperSellerModels.dll
+F:\D\Uni\4th Year\Modeling and Simulation\task 2\Task Two\NewspaperSellerSimulation_Students\NewspaperSellerModels\bin\Debug\NewspaperSellerModels.pdb
+F:\D\Uni\4th Year\Modeling and Simulation\task 2\Task Two\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.csprojAssemblyReference.cache
+F:\D\Uni\4th Year\Modeling and Simulation\task 2\Task Two\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.csproj.CoreCompileInputs.cache
+F:\D\Uni\4th Year\Modeling and Simulation\task 2\Task Two\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.dll
+F:\D\Uni\4th Year\Modeling and Simulation\task 2\Task Two\NewspaperSellerSimulation_Students\NewspaperSellerModels\obj\Debug\NewspaperSellerModels.pdb
