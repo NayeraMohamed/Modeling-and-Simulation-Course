@@ -22,10 +22,10 @@ namespace NewspaperSellerModels
             DayTypeRangesCalcualtion(simulationSystem.DayTypeDistributions);
             DemandsRangesCalcualtion(simulationSystem.DemandDistributions);
 
-            decimal dailyCost = (simulationSystem.NumOfNewspapers * simulationSystem.PurchasePrice)/100;
+            decimal dailyCost = simulationSystem.NumOfNewspapers * simulationSystem.PurchasePrice;
             int lostProfitCounter = 0, scrapProfitCounter = 0;
-            decimal totalSalesProfit = 0, totalCost = dailyCost * simulationSystem.NumOfRecords, totalLostProfit = 0, totalScrapProfit = 0, totalNetProfit = 0;
-
+            decimal totalSalesProfit = 0, totalCost = dailyCost * simulationSystem.NumOfRecords, totalLostProfit = 0, totalScrapProfit = 0, totalNetProfit;
+            
             //simulationSystem.SimulationTable = new List<SimulationCase>(simulationSystem.NumOfRecords);
             for (int i=0; i< simulationSystem.NumOfRecords; i++)
             {
@@ -43,24 +43,29 @@ namespace NewspaperSellerModels
                         demand = demandElement.Demand;
                     }
                 }
-                decimal salesProfit = simulationSystem.SellingPrice * demand;
-                totalSalesProfit += salesProfit;
+                decimal salesProfit;
 
-                decimal lostProfit=0, scrapProfit = 0;
+                decimal lostProfit = 0, scrapProfit = 0;
                 if (demand > simulationSystem.NumOfNewspapers)
                 {
-                    lostProfit = (demand - simulationSystem.NumOfNewspapers) * (simulationSystem.PurchasePrice - simulationSystem.SellingPrice);
+                    salesProfit = simulationSystem.SellingPrice * simulationSystem.NumOfNewspapers;
+                    lostProfit = (demand - simulationSystem.NumOfNewspapers) * (simulationSystem.SellingPrice - simulationSystem.PurchasePrice);
                     lostProfitCounter++;
+                    totalLostProfit += lostProfit;
+                }
+                else if (demand < simulationSystem.NumOfNewspapers)
+                {
+                    salesProfit = simulationSystem.SellingPrice * demand;
+                    scrapProfit = (simulationSystem.NumOfNewspapers - demand) * simulationSystem.ScrapPrice;
+                    scrapProfitCounter++;
+                    totalScrapProfit += scrapProfit;
                 }
                 else
                 {
-                    scrapProfit = (simulationSystem.NumOfNewspapers - demand) * simulationSystem.ScrapPrice;
-                    scrapProfitCounter++;
+                    salesProfit = simulationSystem.SellingPrice * demand;
                 }
-                totalLostProfit += lostProfit;
-                totalScrapProfit += scrapProfit;
-
-                decimal dailyNetProfit = salesProfit - dailyCost - (lostProfit + scrapProfit);
+                totalSalesProfit += salesProfit;
+                decimal dailyNetProfit = salesProfit - dailyCost - lostProfit + scrapProfit;
 
                 //Assigning values to table
                 SimulationCase simulationCase = new SimulationCase();
@@ -77,20 +82,8 @@ namespace NewspaperSellerModels
 
                 simulationSystem.SimulationTable.Add(simulationCase);
 
-                /*simulationSystem.SimulationTable[i].DayNo = i+1;
-                simulationSystem.SimulationTable[i].DailyCost = dailyCost;
-                simulationSystem.SimulationTable[i].RandomNewsDayType = randomDayType;
-                simulationSystem.SimulationTable[i].NewsDayType = newsDayType;
-                simulationSystem.SimulationTable[i].RandomDemand = randomDemand;
-                simulationSystem.SimulationTable[i].Demand = demand;
-                simulationSystem.SimulationTable[i].SalesProfit = salesProfit;
-                simulationSystem.SimulationTable[i].LostProfit = lostProfit;
-                simulationSystem.SimulationTable[i].ScrapProfit = scrapProfit;
-                simulationSystem.SimulationTable[i].DailyNetProfit = dailyNetProfit;*/
-
-
             }
-            totalNetProfit = totalSalesProfit - totalCost - (totalLostProfit + totalScrapProfit);
+            totalNetProfit = totalSalesProfit - totalCost - totalLostProfit + totalScrapProfit;
 
             //Assigning performance Mesures
             simulationSystem.PerformanceMeasures.TotalSalesProfit = totalSalesProfit;

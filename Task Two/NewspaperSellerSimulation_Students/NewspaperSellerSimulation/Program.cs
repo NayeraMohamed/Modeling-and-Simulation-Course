@@ -23,9 +23,9 @@ namespace NewspaperSellerSimulation
             simulationSystem.ReadFile();
             Calculations calculations = new Calculations(simulationSystem);
             simulationSystem = calculations.calculate();
-            string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase2);
+            string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase3);
             MessageBox.Show(result);
-            //Application.Run(new Form1());
+            Application.Run(new Form1());
         }
     }
 }

@@ -29,7 +29,7 @@ namespace NewspaperSellerModels
         #region Reading File
         public void ReadFile()
         {
-            FileStream TestCase = new FileStream("TestCase2.txt", FileMode.OpenOrCreate);
+            FileStream TestCase = new FileStream("TestCase3.txt", FileMode.OpenOrCreate);
             StreamReader sr = new StreamReader(TestCase);
             string line;
             sr.ReadLine();
@@ -87,7 +87,7 @@ namespace NewspaperSellerModels
                 for (int i = 0; i <3; i++)
                 {
                     DayTypeDistribution listElement = new DayTypeDistribution();
-                    listElement.Probability = Decimal.Parse(demandDisp[i]);
+                    listElement.Probability = Decimal.Parse(demandDisp[i+1]);
                     if (i == 0)
                     {
                         listElement.DayType = Enums.DayType.Good;
