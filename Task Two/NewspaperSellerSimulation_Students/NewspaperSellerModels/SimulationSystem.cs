@@ -84,10 +84,23 @@ namespace NewspaperSellerModels
                 DemandDistribution element = new DemandDistribution();
                 List<DayTypeDistribution> list = new List<DayTypeDistribution>();
                 element.Demand = Int32.Parse(demandDisp[0]);
-                for (int i = 1; i <=3; i++)
+                for (int i = 0; i <3; i++)
                 {
                     DayTypeDistribution listElement = new DayTypeDistribution();
                     listElement.Probability = Decimal.Parse(demandDisp[i]);
+                    if (i == 0)
+                    {
+                        listElement.DayType = Enums.DayType.Good;
+
+                    }
+                    else if (i == 1)
+                    {
+                        listElement.DayType = Enums.DayType.Fair;
+                    }
+                    else if (i == 2)
+                    {
+                        listElement.DayType = Enums.DayType.Poor;
+                    }
                     list.Add(listElement);
                     
                 }

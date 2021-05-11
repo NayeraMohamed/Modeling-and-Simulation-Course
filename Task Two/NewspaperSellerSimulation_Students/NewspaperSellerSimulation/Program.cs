@@ -23,7 +23,7 @@ namespace NewspaperSellerSimulation
             simulationSystem.ReadFile();
             Calculations calculations = new Calculations(simulationSystem);
             simulationSystem = calculations.calculate();
-            string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase1);
+            string result = TestingManager.Test(simulationSystem, Constants.FileNames.TestCase2);
             MessageBox.Show(result);
             //Application.Run(new Form1());
         }
