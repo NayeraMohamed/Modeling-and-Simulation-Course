@@ -15,27 +15,25 @@ namespace NewspaperSellerModels
 
         SimulationSystem simulationSystem;
 
-        //Main methods
+        //Main method
         public SimulationSystem calculate()
         {
             Random random = new Random();
             DayTypeRangesCalcualtion(simulationSystem.DayTypeDistributions);
             DemandsRangesCalcualtion(simulationSystem.DemandDistributions);
 
-            decimal dailyCost = simulationSystem.NumOfNewspapers * simulationSystem.PurchasePrice;
             int lostProfitCounter = 0, scrapProfitCounter = 0;
-            decimal totalSalesProfit = 0, totalCost = dailyCost * simulationSystem.NumOfRecords, totalLostProfit = 0, totalScrapProfit = 0, totalNetProfit;
+            decimal dailyCost = simulationSystem.NumOfNewspapers * simulationSystem.PurchasePrice, totalSalesProfit = 0,
+                totalCost = dailyCost * simulationSystem.NumOfRecords, totalLostProfit = 0, totalScrapProfit = 0, totalNetProfit;
             
-            //simulationSystem.SimulationTable = new List<SimulationCase>(simulationSystem.NumOfRecords);
             for (int i=0; i< simulationSystem.NumOfRecords; i++)
             {
-                //Generating random number for dayType
+                //Generating random number for dayType and mapping it
                 int randomDayType = random.Next(1, 100);
                 Enums.DayType newsDayType = MapDayTypeRanges(simulationSystem.DayTypeDistributions, randomDayType);
 
-                //Generating Random number for demands
-                int randomDemand = random.Next(1, 100);
-                int demand=0;
+                //Generating Random number for demands and mapping it
+                int randomDemand = random.Next(1, 100), demand = 0;
                 foreach(DemandDistribution demandElement in simulationSystem.DemandDistributions)
                 {
                     if(MapDemandRanges(demandElement.DayTypeDistributions, randomDemand, newsDayType))
@@ -43,9 +41,8 @@ namespace NewspaperSellerModels
                         demand = demandElement.Demand;
                     }
                 }
-                decimal salesProfit;
-
-                decimal lostProfit = 0, scrapProfit = 0;
+               
+                decimal salesProfit, lostProfit = 0, scrapProfit = 0;
                 if (demand > simulationSystem.NumOfNewspapers)
                 {
                     salesProfit = simulationSystem.SellingPrice * simulationSystem.NumOfNewspapers;
@@ -67,14 +64,14 @@ namespace NewspaperSellerModels
                 totalSalesProfit += salesProfit;
                 decimal dailyNetProfit = salesProfit - dailyCost - lostProfit + scrapProfit;
 
-                //Assigning values to table
+                //Assigning the calculated values to the simulation table
                 SimulationCase simulationCase = new SimulationCase();
                 simulationCase.DayNo = i+1;
-                simulationCase.DailyCost = dailyCost;
                 simulationCase.RandomNewsDayType = randomDayType;
                 simulationCase.NewsDayType = newsDayType;
                 simulationCase.RandomDemand = randomDemand;
                 simulationCase.Demand = demand;
+                simulationCase.DailyCost = dailyCost;
                 simulationCase.SalesProfit = salesProfit;
                 simulationCase.LostProfit = lostProfit;
                 simulationCase.ScrapProfit = scrapProfit;
@@ -83,9 +80,10 @@ namespace NewspaperSellerModels
                 simulationSystem.SimulationTable.Add(simulationCase);
 
             }
+
             totalNetProfit = totalSalesProfit - totalCost - totalLostProfit + totalScrapProfit;
 
-            //Assigning performance Mesures
+            //Assigning the calculated performance Mesures
             simulationSystem.PerformanceMeasures.TotalSalesProfit = totalSalesProfit;
             simulationSystem.PerformanceMeasures.TotalCost = totalCost;
             simulationSystem.PerformanceMeasures.TotalLostProfit = totalLostProfit;
@@ -93,14 +91,15 @@ namespace NewspaperSellerModels
             simulationSystem.PerformanceMeasures.TotalNetProfit = totalNetProfit;
             simulationSystem.PerformanceMeasures.DaysWithMoreDemand = lostProfitCounter;
             simulationSystem.PerformanceMeasures.DaysWithUnsoldPapers = scrapProfitCounter;
+
             return simulationSystem;
         }
 
         #region Helper Functions
-        //Calculate Ranges for each day type
+        //Calculate Ranges for each DayType
         public void DayTypeRangesCalcualtion(List<DayTypeDistribution> dayTypeDistributions)
         {
-            decimal com = 1;
+            decimal cummilative = 1;
             for (int i = 0; i < dayTypeDistributions.Count; i++)
             {
                 decimal probability = dayTypeDistributions[i].Probability;
@@ -108,17 +107,17 @@ namespace NewspaperSellerModels
                 if (i == 0)
                 {
                     dayTypeDistributions[i].CummProbability = probability;
-                    com = dayTypeDistributions[i].CummProbability;
+                    cummilative = dayTypeDistributions[i].CummProbability;
                     dayTypeDistributions[i].MinRange = 1;
-                    dayTypeDistributions[i].MaxRange = (int)(com * 100);
+                    dayTypeDistributions[i].MaxRange = (int)(cummilative * 100);
                 }
 
                 else
                 {
-                    dayTypeDistributions[i].MinRange = (int)((com * 100) + 1);
-                    dayTypeDistributions[i].CummProbability = com + probability;
-                    com = dayTypeDistributions[i].CummProbability;
-                    dayTypeDistributions[i].MaxRange = (int)(com * 100);
+                    dayTypeDistributions[i].MinRange = (int)((cummilative * 100) + 1);
+                    dayTypeDistributions[i].CummProbability = cummilative + probability;
+                    cummilative = dayTypeDistributions[i].CummProbability;
+                    dayTypeDistributions[i].MaxRange = (int)(cummilative * 100);
                 }
                 if (probability == 0)
                 {
@@ -129,7 +128,7 @@ namespace NewspaperSellerModels
 
         }
 
-        //Calculate Ranges for each day type for each demand
+        //For each demand calculate Ranges for each day of the 3 DayTypes 
         public void DemandsRangesCalcualtion(List<DemandDistribution> demandDistributions)
         {
             List<decimal> cummilative = new List<decimal>()

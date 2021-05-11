@@ -18,7 +18,7 @@ namespace NewspaperSellerSimulation
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //maryam btgarb
+            
             SimulationSystem simulationSystem = new SimulationSystem();
             simulationSystem.ReadFile();
             Calculations calculations = new Calculations(simulationSystem);
