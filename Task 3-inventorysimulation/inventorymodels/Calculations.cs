@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +18,11 @@ namespace InventoryModels
         public SimulationSystem calculate()
         {
             Random random = new Random();
-            DemandRangesCalcualtion(simulationSystem.DemandDistribution);
-            LeadDaysRangesCalcualtion(simulationSystem.LeadDaysDistribution);
+            //Calculating cumalitive probability, MinRange and MaxRange for Demand and Lead Days
+            RangesCalcualtion(simulationSystem.DemandDistribution);
+            RangesCalcualtion(simulationSystem.LeadDaysDistribution);
 
             //Declaring global Variables
-            ;
             int dayWithinCycle = 1, cycle = 1, 
                 startQuantity = simulationSystem.StartInventoryQuantity,
                 daysUntilOrderArrive = simulationSystem.StartLeadDays - 1,
@@ -37,7 +37,7 @@ namespace InventoryModels
 
                 //Generating random number for Demand and mapping it
                 int randomDemand = random.Next(1, 100);
-                int demandNumber = MapDemandRanges(simulationSystem.DemandDistribution, randomDemand);
+                int demandNumber = MapRanges(simulationSystem.DemandDistribution, randomDemand);
 
 
                 int endingQuantity = startQuantity - demandNumber;
@@ -65,7 +65,7 @@ namespace InventoryModels
                 {
                     //Generating Random number for Lead Days and mapping it
                     randomLead = random.Next(1, 100);
-                    leadDayValue = MapDemandRanges(simulationSystem.LeadDaysDistribution, randomLead);
+                    leadDayValue = MapRanges(simulationSystem.LeadDaysDistribution, randomLead);
                     daysUntilOrderArrive = leadDayValue;
                      
                     //calculate the next qty
@@ -132,89 +132,46 @@ namespace InventoryModels
 
 
         #region Helper Functions
-        //Calculate Ranges for Demand
-        public void DemandRangesCalcualtion(List<Distribution> demandDistribution)
+        //Calculate Ranges for Demand and Lead Days
+        public void RangesCalcualtion(List<Distribution> distribution)
         {
             decimal cummilative = 1;
-            for (int i = 0; i < demandDistribution.Count; i++)
+            for (int i = 0; i < distribution.Count; i++)
             {
-                decimal probability = demandDistribution[i].Probability;
+                decimal probability = distribution[i].Probability;
 
                 if (i == 0)
                 {
-                    demandDistribution[i].CummProbability = probability;
-                    cummilative = demandDistribution[i].CummProbability;
-                    demandDistribution[i].MinRange = 1;
-                    demandDistribution[i].MaxRange = (int)(cummilative * 100);
+                    distribution[i].CummProbability = probability;
+                    cummilative = distribution[i].CummProbability;
+                    distribution[i].MinRange = 1;
+                    distribution[i].MaxRange = (int)(cummilative * 100);
                 }
 
                 else
                 {
-                    demandDistribution[i].MinRange = (int)((cummilative * 100) + 1);
-                    demandDistribution[i].CummProbability = cummilative + probability;
-                    cummilative = demandDistribution[i].CummProbability;
-                    demandDistribution[i].MaxRange = (int)(cummilative * 100);
+                    distribution[i].MinRange = (int)((cummilative * 100) + 1);
+                    distribution[i].CummProbability = cummilative + probability;
+                    cummilative = distribution[i].CummProbability;
+                    distribution[i].MaxRange = (int)(cummilative * 100);
                 }
                 if (probability == 0)
                 {
-                    demandDistribution[i].MinRange = 0;
-                    demandDistribution[i].MaxRange = 0;
-                }
-            }
-        }
-        //Calculate Ranges for LeadDays
-        public void LeadDaysRangesCalcualtion(List<Distribution> leadDaysDistribution)
-        {
-            decimal cummilative = 1;
-            for (int i = 0; i < leadDaysDistribution.Count; i++)
-            {
-                decimal probability = leadDaysDistribution[i].Probability;
-
-                if (i == 0)
-                {
-                    leadDaysDistribution[i].CummProbability = probability;
-                    cummilative = leadDaysDistribution[i].CummProbability;
-                    leadDaysDistribution[i].MinRange = 1;
-                    leadDaysDistribution[i].MaxRange = (int)(cummilative * 100);
-                }
-
-                else
-                {
-                    leadDaysDistribution[i].MinRange = (int)((cummilative * 100) + 1);
-                    leadDaysDistribution[i].CummProbability = cummilative + probability;
-                    cummilative = leadDaysDistribution[i].CummProbability;
-                    leadDaysDistribution[i].MaxRange = (int)(cummilative * 100);
-                }
-                if (probability == 0)
-                {
-                    leadDaysDistribution[i].MinRange = 0;
-                    leadDaysDistribution[i].MaxRange = 0;
+                    distribution[i].MinRange = 0;
+                    distribution[i].MaxRange = 0;
                 }
             }
         }
 
-        //Function to map demand ranges
-        public int MapDemandRanges(List<Distribution> demandDistributions, int num)
+        //Function to map Demand ranges and Lead Days ranges
+        public int MapRanges(List<Distribution> distributions, int num)
         {
 
-            for (int i = 0; i < demandDistributions.Count(); i++)
+            for (int i = 0; i < distributions.Count(); i++)
             {
-                if (num >= demandDistributions[i].MinRange && num <= demandDistributions[i].MaxRange)
+                if (num >= distributions[i].MinRange && num <= distributions[i].MaxRange)
                 {
-                    return demandDistributions[i].Value;
-                }
-            }
-            return -1;
-        }
-        //Function to map Lead Days ranges
-        public int MapLeadDaysRanges(List<Distribution> leadDaysDistribution, int num)
-        {
-
-            for (int i = 0; i < leadDaysDistribution.Count(); i++)
-            {
-                if (num >= leadDaysDistribution[i].MinRange && num <= leadDaysDistribution[i].MaxRange)
-                {
-                    return leadDaysDistribution[i].Value;
+                    return distributions[i].Value;
                 }
             }
             return -1;
